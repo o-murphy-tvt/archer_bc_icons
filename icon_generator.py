@@ -27,6 +27,20 @@ class Ui_MainWindow(object):
         self.size_sb.setValue(12)
         self.gridLayout.addWidget(self.size_sb)
 
+        self.stretch = QtWidgets.QComboBox()
+
+        stretchs = {
+            'Unstretched': 100,
+            'SemiCondensed': 87,
+            'Condensed': 75,
+            'ExtraCondensed': 62,
+            'UltraCondensed': 50,
+        }
+
+        for k, v in stretchs.items():
+            self.stretch.addItem(k, v)
+        self.gridLayout.addWidget(self.stretch)
+
         self.font_cb = QtWidgets.QComboBox()
         self.families = ['Arial Narrow', 'MS UI Gothic', 'Times New Roman', 'MS Gothic', 'default']
 
@@ -53,6 +67,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.edit.textChanged.connect(self.generate_icon)
         self.size_sb.valueChanged.connect(self.generate_icon)
+        self.stretch.currentIndexChanged.connect(self.generate_icon)
         self.font_cb.currentIndexChanged.connect(self.generate_icon)
 
         self.save.clicked.connect(self.save_bmp)
@@ -80,6 +95,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             font = QtGui.QFont(selected_font)
 
+        font.setStretch(self.stretch.currentData())
+
         font.setPixelSize(self.size_sb.value())
         font.setStyleStrategy(QtGui.QFont.NoAntialias)
         painter.setFont(font)
@@ -87,7 +104,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if row_count == 2:
             for i in range(1, row_count):
                 painter.drawLine(0, int(row_size * i), 32, int(row_size * i))
-                painter.drawLine(0, int(row_size * i)+1, 32, int(row_size * i)+1)
+                painter.drawLine(0, int(row_size * i) + 1, 32, int(row_size * i) + 1)
 
         for i, r in enumerate(rows):
             rect = QtCore.QRect(0, int(row_size * i), 32, row_size)
